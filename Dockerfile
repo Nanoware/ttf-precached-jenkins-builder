@@ -1,4 +1,5 @@
-FROM jenkins/inbound-agent:latest-bookworm-jdk17
+ARG JDKVERSION=jdk17
+FROM jenkins/inbound-agent:latest-bookworm-$JDKVERSION
 
 MAINTAINER terasology@gmail.com
 
