@@ -26,15 +26,15 @@ pipeline {
                     }
                 }
                 environment {
-                    DOCKER_TAG = deduceDockerTag()
                     GAR_BASE_URL = "us-east1-docker.pkg.dev"
-                    IMAGE_NAME = "${GAR_BASE_URL}/teralivekubernetes/test-docker/precachedagent"
+                    DOCKER_TAG = deduceDockerTag()
+                    FULL_IMAGE_NAME = "${GAR_BASE_URL}/teralivekubernetes/test-docker/precachedagent:${DOCKER_TAG}-${JDKVERSION}"
                 }
 
                 stages {
                     stage('Build Docker"') {
                         steps {
-                            sh "docker build -t ${IMAGE_NAME}:${DOCKER_TAG} --build-arg JDKVERSION=${JDKVERSION} ."
+                            sh "docker build -t ${FULL_IMAGE_NAME} --build-arg JDKVERSION=${JDKVERSION} ."
                         }
                     }
                     stage('Push Docker Image') {
@@ -44,7 +44,7 @@ pipeline {
                                 withCredentials([file(credentialsId: 'jenkins-gar-sa', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                                     sh """
                                         cat \${GOOGLE_APPLICATION_CREDENTIALS} | docker login -u _json_key --password-stdin https://${GAR_BASE_URL}
-                                        docker push ${IMAGE_NAME}:${DOCKER_TAG}
+                                        docker push ${FULL_IMAGE_NAME}
                                     """
                                 }
                             }
