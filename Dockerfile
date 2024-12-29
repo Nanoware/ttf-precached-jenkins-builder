@@ -24,8 +24,6 @@ RUN wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u43
     tar -xzf OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz -C /opt && \
     rm OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz
 
-RUN ls -la /opt
-
 USER jenkins
 
 # Prep some basics - make dirs and disable the Gradle daemon (one-time build agents gain nothing from the daemon)
@@ -39,3 +37,13 @@ RUN cd ~/ws \
     && cd joml-ext \
     &&  ./gradlew compileTestJava \
     && rm -rf ~/ws/joml-ext
+
+# This step builds the Terasology engine which has a fair amount of dependencies and such
+RUN cd ~/ws \
+    && git clone --depth 1 https://github.com/MovingBlocks/Terasology.git \
+    && cd Terasology \
+    &&  ./gradlew extractNatives extractConfig compileTestJava \
+    && rm -rf ~/ws/Terasology
+
+# Delete the whole Gradle daemon dir - just contains log files and daemon status files we can't use anyway
+RUN rm -rf ~/.gradle/daemon
