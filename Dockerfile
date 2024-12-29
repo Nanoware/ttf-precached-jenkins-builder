@@ -9,6 +9,9 @@ LABEL org.opencontainers.image.title="Terasology pre-cached Jenkins Inbound Agen
 
 USER root
 
+# Add the backports repository for older JDKs
+RUN echo "deb http://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list
+
 # Install JDK 11 and JDK 8
 RUN apt-get update && \
     apt-cache search openjdk && \
