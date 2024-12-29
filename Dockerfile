@@ -9,14 +9,22 @@ LABEL org.opencontainers.image.title="Terasology pre-cached Jenkins Inbound Agen
 
 USER root
 
-# Add the backports repository for older JDKs
-RUN echo "deb http://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list
-
-# Install JDK 11 and JDK 8
+# Install wget for downloading the Temurin JDKs
 RUN apt-get update && \
-    apt-cache search openjdk && \
-    apt-get install -y --no-install-recommends openjdk-11-jdk openjdk-8-jdk && \
+    apt-get install -y --no-install-recommends wget && \
     rm -rf /var/lib/apt/lists/*
+
+# Install OpenJDK 11 from Adoptium Temurin
+RUN wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.25%2B9/OpenJDK11U-jdk_x64_linux_hotspot_11.0.25_9.tar.gz && \
+    tar -xzf OpenJDK11U-jdk_x64_linux_hotspot_11.0.25_9.tar.gz -C /opt && \
+    rm OpenJDK11U-jdk_x64_linux_hotspot_11.0.25_9.tar.gz
+
+# Install OpenJDK 8 from Adoptium Temurin
+RUN wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u432-b06/OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz && \
+    tar -xzf OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz -C /opt && \
+    rm OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz
+
+RUN ls -la /opt
 
 USER jenkins
 
