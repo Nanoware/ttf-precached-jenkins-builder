@@ -11,6 +11,7 @@ USER root
 
 # Install JDK 11 and JDK 8
 RUN apt-get update && \
+    apt-cache search openjdk && \
     apt-get install -y --no-install-recommends openjdk-11-jdk openjdk-8-jdk && \
     rm -rf /var/lib/apt/lists/*
 
