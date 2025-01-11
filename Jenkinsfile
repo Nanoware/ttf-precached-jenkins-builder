@@ -18,7 +18,7 @@ pipeline {
     environment {
         GAR_BASE_URL = "us-east1-docker.pkg.dev"
         DOCKER_TAG = deduceDockerTag()
-        FULL_IMAGE_NAME = "${GAR_BASE_URL}/teralivekubernetes/test-docker/precachedagent:${DOCKER_TAG}"
+        FULL_IMAGE_NAME = "${GAR_BASE_URL}/teralivekubernetes/logistics/precachedagent:${DOCKER_TAG}"
     }
 
     stages {
